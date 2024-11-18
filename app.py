@@ -7,7 +7,7 @@ import pickle
 # Load the pre-trained model from the uploaded file
 @st.cache_resource
 def load_model():
-    with open('/mnt/data/best_model.pkl', 'rb') as f:
+    with open('best_model.pkl', 'rb') as f:
         model = pickle.load(f)
     return model
 
