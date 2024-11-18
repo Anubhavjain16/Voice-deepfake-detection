@@ -1,6 +1,7 @@
 import streamlit as st
 import torch
 import torchaudio
+from io import BytesIO
 import numpy as np
 import pickle
 
@@ -23,9 +24,13 @@ else:
     st.success("Model loaded successfully.")
 
 # Function to preprocess the audio file for the model
-def preprocess_audio(file):
+def preprocess_audio(uploaded_file):
     try:
-        waveform, sample_rate = torchaudio.load(file)
+        # Read the uploaded file using BytesIO
+        file_bytes = BytesIO(uploaded_file.read())
+        
+        # Load the audio using torchaudio
+        waveform, sample_rate = torchaudio.load(file_bytes)
         st.write(f"Original Sample Rate: {sample_rate}, Waveform Shape: {waveform.shape}")
         
         waveform = waveform.mean(dim=0).unsqueeze(0)  # Convert to mono and add batch dimension
@@ -43,7 +48,7 @@ def predict_real_or_fake(waveform):
     try:
         model.eval()
         with torch.no_grad():
-            output = model(waveform)  # Using the model directly for forward pass
+            output = model(waveform)
             st.write(f"Model Output: {output}")
             
             # If the model output is not a single value, adjust accordingly
