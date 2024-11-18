@@ -1,82 +1,50 @@
 import streamlit as st
-import torch
-import torchaudio
-from io import BytesIO
+import librosa
+import soundfile as sf
 import numpy as np
 import pickle
 
-# Load the pre-trained model from the uploaded file
-@st.cache_resource
-def load_model():
+# Load the pre-trained model
+model_path = 'best_model.pkl'
+with open(model_path, 'rb') as file:
+    model = pickle.load(file)
+
+# Function to extract audio features
+def extract_features(audio_path):
     try:
-        with open('best_model.pkl', 'rb') as f:
-            model = pickle.load(f)
-        return model
+        audio, sr = librosa.load(audio_path, sr=None)
+        mfccs = librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=13)
+        mfccs_mean = np.mean(mfccs.T, axis=0)
+        return mfccs_mean
     except Exception as e:
-        st.error(f"Error loading model: {e}")
+        st.error(f"Error in processing audio: {e}")
         return None
 
-model = load_model()
-
-if model is None:
-    st.error("Model could not be loaded. Please check the model file.")
-else:
-    st.success("Model loaded successfully.")
-
-# Function to preprocess the audio file for the model
-def preprocess_audio(uploaded_file):
-    try:
-        # Read the uploaded file using BytesIO
-        file_bytes = BytesIO(uploaded_file.read())
-        
-        # Load the audio using torchaudio
-        waveform, sample_rate = torchaudio.load(file_bytes)
-        st.write(f"Original Sample Rate: {sample_rate}, Waveform Shape: {waveform.shape}")
-        
-        waveform = waveform.mean(dim=0).unsqueeze(0)  # Convert to mono and add batch dimension
-        if sample_rate != 32000:
-            resampler = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=32000)
-            waveform = resampler(waveform)
-        st.write(f"Resampled Waveform Shape: {waveform.shape}")
-        return waveform
-    except Exception as e:
-        st.error(f"Error processing audio file: {e}")
-        return None
-
-# Function to make predictions using the loaded model
-def predict_real_or_fake(waveform):
-    try:
-        model.eval()
-        with torch.no_grad():
-            output = model(waveform)
-            st.write(f"Model Output: {output}")
-            
-            # If the model output is not a single value, adjust accordingly
-            if isinstance(output, torch.Tensor):
-                prediction = torch.sigmoid(output).item()
-            else:
-                prediction = output
-            
-        return "Fake" if prediction > 0.5 else "Real"
-    except Exception as e:
-        st.error(f"Error during prediction: {e}")
-        return None
-
-# Streamlit App
-st.title("Audio Deepfake Detection App")
-st.write("Upload an audio file (.wav) to check if it is real or fake.")
+# Streamlit UI
+st.title("Fake or Real Audio Detector")
+st.write("Upload an audio file to check if it's real or fake.")
 
 # File uploader
-uploaded_file = st.file_uploader("Choose an audio file", type=["wav"])
+uploaded_file = st.file_uploader("Upload an audio file (WAV format)", type=["wav"])
 
 if uploaded_file is not None:
-    # Preprocess and predict
-    waveform = preprocess_audio(uploaded_file)
+    # Save the uploaded file
+    with open("uploaded_audio.wav", "wb") as f:
+        f.write(uploaded_file.getbuffer())
     
-    if waveform is not None:
-        prediction = predict_real_or_fake(waveform)
-        if prediction is not None:
-            # Display the result
-            st.write(f"Prediction: The audio is **{prediction}**.")
-        else:
-            st.error("Prediction could not be made.")
+    # Extract features from the uploaded file
+    features = extract_features("uploaded_audio.wav")
+    
+    if features is not None:
+        # Reshape features for prediction
+        features = features.reshape(1, -1)
+        
+        # Make prediction
+        prediction = model.predict(features)
+        result = "Real" if prediction[0] == 1 else "Fake"
+        
+        st.subheader(f"Prediction: {result}")
+    else:
+        st.error("Failed to extract features from the audio file.")
+else:
+    st.info("Please upload a WAV file to proceed.")
