@@ -1,6 +1,6 @@
-###🎙️ Voice Deepfake Detection System
+🎙️ Voice Deepfake Detection System
 
-##🧠 Overview
+🧠 Overview
 
 This project is a **Streamlit-based web application** designed to detect deepfake (AI-generated) audio by analyzing uploaded `.wav` files. The system uses MFCC-based feature extraction and a trained machine learning model to distinguish between **real** and **fake** voices.
 
@@ -8,7 +8,7 @@ The application was built to raise awareness and provide a lightweight tool for 
 
 ---
 
-##🚀 Features
+🚀 Features
 
 - Upload and analyze `.wav` audio files  
 - Extract MFCC features automatically from the waveform  
@@ -18,7 +18,7 @@ The application was built to raise awareness and provide a lightweight tool for 
 
 ---
 
-##🔧 Technologies Used
+🔧 Technologies Used
 
 - **Frontend/UI:** Streamlit  
 - **Backend/ML:** Scikit-learn, XGBoost, Pickle  
@@ -28,7 +28,7 @@ The application was built to raise awareness and provide a lightweight tool for 
 
 ---
 
- ##🛠️ Installation
+ 🛠️ Installation
 
  1. Clone the repository
 ```bash
