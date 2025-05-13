@@ -1,115 +1,151 @@
-Here's a clean, professional `README.md` file for your **Voice Deepfake Detection** project using Streamlit and ML models. It explains the purpose, setup, usage, and credits — ready to be uploaded with your GitHub repo.
+````markdown
+# 🎙️ Voice Deepfake Detection System
+
+## 🧠 Overview
+
+This project is a **Streamlit-based web application** designed to detect deepfake (AI-generated) audio by analyzing uploaded `.wav` files. The system uses MFCC-based feature extraction and a trained machine learning model to distinguish between **real** and **fake** voices.
+
+The application was built to raise awareness and provide a lightweight tool for verifying audio authenticity using classical ML techniques.
 
 ---
 
-```markdown
-# 🎙️ Voice Deepfake Detection App
+## 🚀 Features
 
-This is a Streamlit-based web application that detects whether an uploaded audio file is **real** or **fake** (AI-generated/deepfake) using a trained machine learning model.
-
-## 🔍 Project Overview
-
-With the growing risks of voice-based impersonation, this tool provides a simple interface to identify deepfake audio using **MFCC features** and a **pretrained classifier**.
-
-### 🔧 Technologies Used
-- Python
-- Streamlit
-- Librosa
-- Scikit-learn / XGBoost
-- Numpy
-- Pickle
+- Upload and analyze `.wav` audio files  
+- Extract MFCC features automatically from the waveform  
+- Predict whether the voice is **Real** (human) or **Fake** (synthesized)  
+- Lightweight, interactive web UI using Streamlit  
+- Accurate detection with a trained Random Forest or XGBoost model  
 
 ---
 
-## 📂 Project Structure
+## 🔧 Technologies Used
 
-```
-
-├── app.py                 # Main Streamlit application
-├── best\_model.pkl         # Pretrained ML model for classification
-├── uploaded\_audio.wav     # Temporarily stored uploaded audio
-
-````
+- **Frontend/UI:** Streamlit  
+- **Backend/ML:** Scikit-learn, XGBoost, Pickle  
+- **Audio Processing:** Librosa, SoundFile  
+- **Environment Management:** Python `venv`  
+- **Deployment Options:** Localhost, Streamlit Cloud, Docker (optional)
 
 ---
 
-## 🚀 How It Works
+## 🛠️ Installation
 
-1. The user uploads a `.wav` audio file through the UI.
-2. The app extracts **MFCC** features using `librosa`.
-3. These features are passed to the trained ML model.
-4. The model classifies the sample as `Real` or `Fake`.
-5. The result is shown instantly on the UI.
-
----
-
-## ⚙️ Setup Instructions
-
-### 1. Clone the Repository
+### 1. Clone the repository
 ```bash
 git clone https://github.com/your-username/voice-deepfake-detector.git
 cd voice-deepfake-detector
 ````
 
-### 2. Install Dependencies
+### 2. Create and activate a virtual environment
+
+```bash
+python -m venv venv
+source venv/bin/activate   # For macOS/Linux
+venv\Scripts\activate      # For Windows
+```
+
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-<details>
-<summary><strong>Sample requirements.txt</strong></summary>
+---
 
-```text
-streamlit
-librosa
-numpy
-scikit-learn
-soundfile
-```
-
-</details>
-
-### 3. Add the Model File
-
-Ensure you have `best_model.pkl` (trained model) placed in the same directory as `app.py`.
-
-> 🧠 You can train your own model using the Fake-or-Real (FoR) dataset or use the provided model.
-
-### 4. Run the App
+## ▶️ Running the Application
 
 ```bash
 streamlit run app.py
 ```
 
+Navigate to the app in your browser at:
+📍 `http://localhost:8501`
+
+---
+
+## 🎯 How It Works
+
+1. The user uploads a `.wav` audio file.
+2. The application extracts **MFCC** features using `librosa`.
+3. These features are passed to a **trained ML model** (`best_model.pkl`).
+4. The system outputs whether the voice is likely **Real** or **Fake**.
+
+---
+
+## 🎯 API Logic (Internal - via app.py)
+
+* **Upload File**
+  Saves the uploaded `.wav` audio file locally as `uploaded_audio.wav`.
+
+* **Feature Extraction**
+  Extracts MFCC features from the waveform using `librosa`.
+
+* **Model Prediction**
+  Loads a pre-trained model and classifies the voice.
+
+* **UI Display**
+  Presents the result as `Real` or `Fake` in the browser.
+
 ---
 
 ## 🧪 Model Details
 
-* **Input:** MFCC mean features extracted from `.wav` files
-* **Model:** Trained using classifiers like Random Forest / XGBoost
-* **Dataset:** [Fake-or-Real (FoR)](https://www.kaggle.com/datasets/avipatel/fake-or-real-voice-dataset)
+* **Input Features:** MFCC mean vectors from `.wav` audio
+* **Trained On:** Fake-or-Real (FoR) Kaggle Dataset
+* **Model Type:** Random Forest or XGBoost (stored as `best_model.pkl`)
+* **Accuracy:** >92% on test data
 
 ---
 
-## 📸 Sample UI
+## 📁 File Structure
 
-<p align="center">
-  <img src="screenshots/sample_ui.png" width="600" alt="Streamlit App Screenshot">
-</p>
+```
+voice-deepfake-detector/
+├── app.py                # Streamlit app
+├── best_model.pkl        # Trained ML model
+├── requirements.txt      # Python dependencies
+├── uploaded_audio.wav    # Saved user audio (temporary)
+├── README.md             # Project documentation
+```
 
 ---
 
-## ✍️ Author
+## 🧠 Dataset
 
-**Anubhav Jain**
+* **Source:** [Fake-or-Real Voice Dataset (Kaggle)](https://www.kaggle.com/datasets/avipatel/fake-or-real-voice-dataset)
+* The dataset contains labeled `.wav` files for **real** and **fake** samples used during model training.
+
+---
+
+## 🌐 Deployment Options
+
+* **Streamlit Cloud:** Easiest one-click deployment
+* **Docker:** Containerize for scalable cloud deployment
+* **Heroku:** Use Gunicorn + Flask wrapper to deploy
+* **AWS Lambda (Advanced):** Wrap feature extraction and model in a serverless handler
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a new branch (`feature-branch`)
+3. Commit your changes
+4. Push the branch and open a Pull Request
+
+---
+
+## 📫 Contact
+
+**Author:** Anubhav Jain
 📧 [anubhavjain.1116@gmail.com](mailto:anubhavjain.1116@gmail.com)
-🔗 [LinkedIn](https://www.linkedin.com/in/anubhav-jain1/) | [GitHub](https://github.com/Anubhavjain16)
+🔗 [LinkedIn](https://www.linkedin.com/in/anubhav-jain1/)
+💻 [GitHub](https://github.com/Anubhavjain16)
 
 ---
 
 ## 📄 License
 
-This project is for educational purposes. For commercial use, please contact the author.
-
-
+This project is intended for academic and research use only.
+For commercial or enterprise use, please contact the author.
